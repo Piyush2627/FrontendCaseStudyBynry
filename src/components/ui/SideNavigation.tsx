@@ -8,21 +8,22 @@ interface SidebarNavigation {
 function SideNavigation({ CoreLink }: SidebarNavigation) {
   return (
     <>
-      <div className="shadow-l sticky top-0 flex h-screen w-10 flex-col border p-4 shadow-blue-400 md:w-60">
-        <div className="text-3xl font-bold capitalize">
-          <Link to="/">Element</Link>
+      <div className="shadow-l sticky top-0 flex h-screen w-16 flex-col border p-2 shadow-blue-400 md:w-60">
+        <div className="hidden p-4 sm:block">
+          <div className="text-xl font-bold capitalize md:text-3xl">
+            <Link to="/">GeoConnect</Link>
+          </div>
+          <p className="text-lg font-semibold md:text-2xl">Connect people</p>
+          <hr className="my-2 md:my-4" />
         </div>
-        <p className="text-3xl font-semibold"> UI Library</p>
-        <hr className="my-4" />
-        <p className="text-lg"> UI Library</p>
-        <div className="scrollbar ml-2 mt-2 overflow-y-scroll whitespace-nowrap border-l">
+        <div className="scrollbar ml-1 mt-2 overflow-y-auto whitespace-nowrap border-l md:ml-2">
           {CoreLink.map((ele, index) => {
             return (
               <div key={index} className="border-black pt-2 hover:border-l-2">
                 <Link to={ele.link} className="">
-                  <div className="flex items-center space-x-1 px-4">
+                  <div className="mt-2 flex items-center space-x-1 px-2 md:px-4">
                     <div>{ele.Icons}</div>
-                    <div> {ele.title}</div>
+                    <div className="hidden md:block">{ele.title}</div>
                   </div>
                 </Link>
               </div>
@@ -30,7 +31,7 @@ function SideNavigation({ CoreLink }: SidebarNavigation) {
           })}
         </div>
 
-        <div className="ml-2 mt-2 border-l"></div>
+        <div className="ml-1 mt-2 border-l md:ml-2"></div>
         <div className="mt-4 grow"></div>
       </div>
     </>

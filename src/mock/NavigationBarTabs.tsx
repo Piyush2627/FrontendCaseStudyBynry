@@ -7,15 +7,15 @@ import {
   PiUserCircleBold,
 } from "react-icons/pi";
 
-export const DocsLinks = [
+export const AdminLinks = [
   {
-    Icons: <PiBookBold />,
-    title: "Introduction",
-    link: "introduction",
+    Icons: <PiBookBold className="size-7 md:size-8" />,
+    title: "Dashboard",
+    link: "/Dashboard",
   },
   {
-    Icons: <PiCodeBlockBold />,
-    title: "Installation",
-    link: "installation",
+    Icons: <PiCodeBlockBold className="size-7 md:size-8" />,
+    title: "Users Location",
+    link: "/location",
   },
 ];

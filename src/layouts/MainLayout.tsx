@@ -2,17 +2,17 @@
 //components
 import SideNavigation from "../components/ui/SideNavigation";
 //mock data
-import { DocsLinks } from "../mock/NavigationBarTabs";
-import UserDashboard from "../pages/UserDashboard";
+import { AdminLinks } from "../mock/NavigationBarTabs";
+import AdminDashboard from "../pages/AdminDashboard";
 
 function MainLayout() {
   return (
     <div className="flex">
       <div className="">
-        <SideNavigation CoreLink={DocsLinks} />
+        <SideNavigation CoreLink={AdminLinks} />
       </div>
       <div className="grow">
-        <UserDashboard />
+        <AdminDashboard />
       </div>
     </div>
   );

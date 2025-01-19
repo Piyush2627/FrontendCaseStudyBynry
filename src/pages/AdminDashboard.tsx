@@ -2,13 +2,27 @@ import React, { useEffect, useState } from "react";
 import MapComponents from "../hooks/MapComponent ";
 import { userType } from "../types/Types";
 
-const UsersDashboard: React.FC = () => {
+const AdminDashboard: React.FC = () => {
   const [usersData, setUsersData] = useState<userType[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isMapModelOpen, setIsMapModalOpen] = useState<boolean>(false);
   const [isSelectedUser, setIsSelectedUsers] = useState<
     userType | null | undefined
   >(null);
+  const [newUser, setNewUser] = useState<userType>({
+    user_id: 0,
+    password: "",
+    first_name: "",
+    last_name: "",
+    age: 0,
+    email: "",
+    phone_number: "",
+    address_line_1: "",
+    profile_image_url: "",
+    user_type: "",
+  });
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const usersPerPage = 7;
@@ -39,8 +53,53 @@ const UsersDashboard: React.FC = () => {
     setIsMapModalOpen(false);
   };
 
+  const handleAddUser = () => {
+    if (isEditMode) {
+      setUsersData((prevUsers) =>
+        prevUsers.map((user) =>
+          user.user_id === newUser.user_id ? newUser : user,
+        ),
+      );
+      setIsEditMode(false);
+    } else {
+      setUsersData((prevUsers) => [
+        ...prevUsers,
+        { ...newUser, user_id: Date.now() },
+      ]);
+    }
+    resetNewUser();
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteUser = (id: number) => {
+    setUsersData((prevUsers) =>
+      prevUsers.filter((user) => user.user_id !== id),
+    );
+  };
+
+  const handleEditUser = (user: userType) => {
+    setNewUser(user);
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase());
+  };
+
+  const resetNewUser = () => {
+    setNewUser({
+      password: "",
+      user_id: 0,
+      first_name: "",
+      last_name: "",
+      age: 0,
+      email: "",
+      phone_number: "",
+      address_line_1: "",
+      profile_image_url: "",
+      user_type: "",
+    });
   };
 
   const filteredUsers = usersData.filter(
@@ -75,7 +134,9 @@ const UsersDashboard: React.FC = () => {
       <div className="w-full rounded-md bg-white p-4 md:p-8">
         <div className="flex flex-col items-center justify-between pb-6 md:flex-row">
           <div className="mb-4 md:mb-0">
-            <h2 className="text-2xl font-semibold md:text-4xl">Users Data</h2>
+            <h2 className="text-2xl font-semibold md:text-4xl">
+              Admins Dashboard Data
+            </h2>
             <span className="text-xs">All users</span>
           </div>
           <div className="flex items-center space-x-4">
@@ -100,6 +161,12 @@ const UsersDashboard: React.FC = () => {
                 onChange={handleSearch}
               />
             </div>
+            <button
+              className="cursor-pointer rounded-md bg-indigo-600 px-4 py-2 font-semibold tracking-wide text-white"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Add User
+            </button>
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -115,9 +182,9 @@ const UsersDashboard: React.FC = () => {
                   </th>
                   <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                     Phone No
-                  </th>{" "}
+                  </th>
                   <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
-                    Address
+                    Actions
                   </th>
                   <th className="border-b-2 border-gray-200 bg-gray-100 px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                     Summary
@@ -154,11 +221,19 @@ const UsersDashboard: React.FC = () => {
                       </p>
                     </td>
                     <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
-                      <p className="whitespace-no-wrap text-gray-900">
-                        {user.address_line_1}
-                      </p>
+                      <button
+                        className="mr-2 rounded bg-red-500 px-3 py-1 text-white hover:bg-red-700"
+                        onClick={() => handleDeleteUser(user.user_id)}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="mr-2 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-700"
+                        onClick={() => handleEditUser(user)}
+                      >
+                        Edit
+                      </button>
                     </td>
-
                     <td className="border-b border-gray-200 bg-white px-5 py-5 text-sm">
                       <button
                         className="mr-2 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-700"
@@ -196,8 +271,8 @@ const UsersDashboard: React.FC = () => {
       {isMapModelOpen && isSelectedUser && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-full max-w-md rounded-lg bg-white p-6">
-            <div className="font-semibold">
-              The user Address is : {isSelectedUser.address_line_1}
+            <div className="font-bold">
+              The Address is : {isSelectedUser.address_line_1}
             </div>
             <MapComponents address={isSelectedUser.address_line_1} />
 
@@ -216,8 +291,122 @@ const UsersDashboard: React.FC = () => {
           </div>
         </div>
       )}
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-lg bg-white p-6">
+            <h2 className="mb-4 text-2xl font-semibold">
+              {isEditMode ? "Edit User" : "Add New User"}
+            </h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleAddUser();
+              }}
+            >
+              <input
+                type="text"
+                placeholder="First Name"
+                className="mb-2 w-full border p-2"
+                value={newUser.first_name}
+                onChange={(e) =>
+                  setNewUser((prev) => ({
+                    ...prev,
+                    first_name: e.target.value,
+                  }))
+                }
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                className="mb-2 w-full border p-2"
+                value={newUser.last_name}
+                onChange={(e) =>
+                  setNewUser((prev) => ({ ...prev, last_name: e.target.value }))
+                }
+              />
+              <input
+                type="number"
+                placeholder="Age"
+                className="mb-2 w-full border p-2"
+                value={newUser.age}
+                onChange={(e) =>
+                  setNewUser((prev) => ({
+                    ...prev,
+                    age: Number(e.target.value),
+                  }))
+                }
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="mb-2 w-full border p-2"
+                value={newUser.email}
+                onChange={(e) =>
+                  setNewUser((prev) => ({ ...prev, email: e.target.value }))
+                }
+              />
+              <input
+                type="text"
+                placeholder="Phone Number"
+                className="mb-2 w-full border p-2"
+                value={newUser.phone_number}
+                onChange={(e) =>
+                  setNewUser((prev) => ({
+                    ...prev,
+                    phone_number: e.target.value,
+                  }))
+                }
+              />
+              <input
+                type="text"
+                placeholder="Address"
+                className="mb-2 w-full border p-2"
+                value={newUser.address_line_1}
+                onChange={(e) =>
+                  setNewUser((prev) => ({
+                    ...prev,
+                    address_line_1: e.target.value,
+                  }))
+                }
+              />
+              <input
+                type="text"
+                placeholder="Profile Image URL"
+                className="mb-2 w-full border p-2"
+                value={newUser.profile_image_url}
+                onChange={(e) =>
+                  setNewUser((prev) => ({
+                    ...prev,
+                    profile_image_url: e.target.value,
+                  }))
+                }
+              />
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  className="mr-2 rounded bg-gray-300 px-4 py-2 hover:bg-gray-400"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setIsEditMode(false);
+                    resetNewUser();
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700"
+                >
+                  {isEditMode ? "Update User" : "Add User"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default UsersDashboard;
+export default AdminDashboard;
