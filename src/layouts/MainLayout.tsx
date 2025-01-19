@@ -2,17 +2,17 @@
 //components
 import SideNavigation from "../components/ui/SideNavigation";
 //mock data
-import { ComponentsLinks } from "../mock/NavigationBarTabs";
-import { Outlet } from "react-router-dom";
+import { DocsLinks } from "../mock/NavigationBarTabs";
+import UserDashboard from "../pages/UserDashboard";
 
 function MainLayout() {
   return (
     <div className="flex">
-      <div className="w-60">
-        <SideNavigation CoreLink={ComponentsLinks} />
+      <div className="">
+        <SideNavigation CoreLink={DocsLinks} />
       </div>
       <div className="grow">
-        <Outlet />
+        <UserDashboard />
       </div>
     </div>
   );
