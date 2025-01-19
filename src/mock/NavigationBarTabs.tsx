@@ -1,11 +1,4 @@
-import {
-  PiBookBold,
-  PiChartLineBold,
-  PiChatBold,
-  PiCodeBlockBold,
-  PiLockBold,
-  PiUserCircleBold,
-} from "react-icons/pi";
+import { PiBookBold, PiCodeBlockBold } from "react-icons/pi";
 
 export const AdminLinks = [
   {

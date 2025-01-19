@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { RiSettings3Fill } from "react-icons/ri";
 
 interface SidebarNavigation {
   CoreLink: any[];
